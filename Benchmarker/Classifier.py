@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import os
+import time
 
 class Classifier(ABC):
 
@@ -17,54 +18,70 @@ class Classifier(ABC):
         self.test_dataset_path = test_dataset_path
         self.config_list = config_list
 
-    @abstractmethod
-    def preprocess_dataset(self, dataset):
-        '''
-            Reads the dataset and returns a preprocessed version of it.
-            #TODO specify the returned format (csv, json, pandas dataframe, any at all,...?)
-        '''
-        raise NotImplementedError
-
-    @abstractmethod
-    def preprocess_dataset_and_write(self, dataset):
-        '''
-            Reads the dataset, preprocesses it and writes it to file
-        '''
-        raise NotImplementedError
 
     def train_classifier(self, train_file):
         '''
             Train the classifier with all configs
             save all the models
         '''
-        pass
+        for config in self.config_list:
+            print("Training classifier with following configuration:")
+            start_time = time.time()
+            model = self.train_classifier_with_config(train_file, config)
+            print("Classifier trained with stated configuration")
+            config.train_time = time.time() - start_time
+            print("Training took %d seconds" % config.train_time)
+            path = os.path.join(config.get_dir(), config.get_str())
+            if not os.path.exists(config.get_dir()):
+                os.makedirs(config.get_dir())
+            if self.save_model(model, path):
+                config.model_size = os.stat(path).st_size
+                print("Model saved successfully")
+            else:
+                print("Model wasn't saved")
+        
+    
+    @abstractmethod    
+    def save_model(self, model, path):
+        '''
+            How to save a model of this classsifier to the given path
+            return save status
+        '''
+        raise NotImplementedError 
 
     @abstractmethod
     def train_classifier_with_config(self, train_file, config):
         '''
             Train the model with the given cofiguration(hyperparameters)
-            return thr resulting model
+            return the resulting model
         '''
         raise NotImplementedError
     
     def get_model(self, config):
-        '''
-            Return the model corresponding to this configuration
-        '''
-        pass
-
-    def test(self, test_data):
-        '''
-            Test all the models with the test data
-            Save all the results
-        '''
-        pass
+        path = os.path.join(config.get_dir(), config.get_str())
+        return self.load_model(path)
 
     @abstractmethod
-    def test_model(self, test_data, config):
+    def load_model(self, path):
+        '''
+            How to load the model from given path 
+        '''
+        raise NotImplementedError
+
+    def test_classifier(self, test_data):
+        for config in self.config_list:
+            model = self.get_model(config)
+            start_time = time.time()
+            config.accuracy = self.test_classifier_with_config(test_data, model)
+            config.test_time = time.time() - start_time
+
+        
+
+    @abstractmethod
+    def test_classifier_with_config(self, test_data, model):
         '''
             Test model with given config
-            return ?
+            return accuracy
         '''
         raise NotImplementedError
     
