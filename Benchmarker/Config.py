@@ -11,6 +11,9 @@ class Config(ABC):
         self.test_time = 0
         self.accuracy = 0
 
+    @abstractmethod
+    def get_description(self):
+        raise NotImplementedError
 
     @abstractmethod
     def get_str(self):
