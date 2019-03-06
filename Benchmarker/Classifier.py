@@ -22,6 +22,7 @@ class Classifier(ABC):
     def train_classifier(self):
         for config in self.config_list:
             print("Training classifier with following configuration:")
+            print(config.get_description())
             start_time = time.time()
             model = self.train_classifier_with_config(self.train_dataset_path, config)
             print("Classifier trained with stated configuration")
