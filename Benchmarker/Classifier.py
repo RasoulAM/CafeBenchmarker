@@ -20,25 +20,22 @@ class Classifier(ABC):
 
 
     def train_classifier(self, train_file):
-        '''
-            Train the classifier with all configs
-            save all the models
-        '''
         for config in self.config_list:
             print("Training classifier with following configuration:")
             start_time = time.time()
-            model = self.train_classifier_with_config(train_file, config)
-            print("Classifier trained with stated configuration")
-            config.train_time = time.time() - start_time
-            print("Training took %d seconds" % config.train_time)
-            path = os.path.join(config.get_dir(), config.get_str())
-            if not os.path.exists(config.get_dir()):
-                os.makedirs(config.get_dir())
-            if self.save_model(model, path):
-                config.model_size = os.stat(path).st_size
-                print("Model saved successfully")
-            else:
-                print("Model wasn't saved")
+            with open(self.train_dataset_path, "r") as train_file:
+                model = self.train_classifier_with_config(train_file, config)
+                print("Classifier trained with stated configuration")
+                config.train_time = time.time() - start_time
+                print("Training took %d seconds" % config.train_time)
+                path = os.path.join(config.get_dir(), config.get_str())
+                if not os.path.exists(config.get_dir()):
+                    os.makedirs(config.get_dir())
+                if self.save_model(model, path):
+                    config.model_size = os.stat(path).st_size
+                    print("Model saved successfully")
+                else:
+                    print("Model wasn't saved")
         
     
     @abstractmethod    
@@ -68,17 +65,17 @@ class Classifier(ABC):
         '''
         raise NotImplementedError
 
-    def test_classifier(self, test_data):
+    def test_classifier(self):
         for config in self.config_list:
             model = self.get_model(config)
-            start_time = time.time()
-            config.accuracy = self.test_classifier_with_config(test_data, model)
-            config.test_time = time.time() - start_time
-
+            with open(self.test_dataset_path) as test_file:
+                start_time = time.time()
+                config.accuracy = self.test_classifier_with_config(test_file, model)
+                config.test_time = time.time() - start_time
         
 
     @abstractmethod
-    def test_classifier_with_config(self, test_data, model):
+    def test_classifier_with_config(self, test_file, model):
         '''
             Test model with given config
             return accuracy
