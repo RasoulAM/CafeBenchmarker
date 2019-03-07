@@ -21,26 +21,32 @@ class Classifier(ABC):
         self.test_dataset_path = test_dataset_path
         
 
-    def train_classifier(self):
+    def train_classifier(self, debug=False):
         for config in self.config_list:
-            print("----------------------------------------------------------------")
-            print("Training classifier with following configuration:")
-            print(config.get_description())
-            print()
+            if debug:
+                print("----------------------------------------------------------------")
+                print("Training classifier with following configuration:")
+                print(config.get_description())
+                print()
             start_time = time.time()
             model = self.train_classifier_with_config(self.train_dataset_path, config)
-            print("Classifier trained with stated configuration")
+            if debug:
+                print("Classifier trained with stated configuration")
             config.train_time = time.time() - start_time
-            print("Training took %d seconds" % config.train_time)
+            if debug:
+                print("Training took %d seconds" % config.train_time)
             path = os.path.join(config.get_dir(), config.get_str())
             if not os.path.exists(config.get_dir()):
                 os.makedirs(config.get_dir())
             if self.save_model(model, path):
                 config.model_size = os.stat(path).st_size
-                print("Model saved successfully")
+                if debug:
+                    print("Model saved successfully")
             else:
-                print("Model wasn't saved")
-            print("----------------------------------------------------------------")
+                if debug:
+                    print("Model wasn't saved")
+            if debug:
+                print("----------------------------------------------------------------")
 
     
     @abstractmethod    

@@ -45,9 +45,13 @@ class Benchmarker:
         '''
         pass
 
-    def train_all_classifiers(self):
+    def train_all_classifiers(self, debug=False):
         for classifier in self.list_of_classifiers:
-            classifier.train_classifier()
+            classifier.train_classifier(debug=debug)
+
+    def test_all_classifiers(self, debug=False):
+        for classifier in self.list_of_classifiers:
+            classifier.test_classifier(debug=debug)
 
     def report_stats(self):
         '''
