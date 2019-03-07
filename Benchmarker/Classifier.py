@@ -21,8 +21,10 @@ class Classifier(ABC):
 
     def train_classifier(self):
         for config in self.config_list:
+            print("----------------------------------------------------------------")
             print("Training classifier with following configuration:")
             print(config.get_description())
+            print()
             start_time = time.time()
             model = self.train_classifier_with_config(self.train_dataset_path, config)
             print("Classifier trained with stated configuration")
@@ -36,7 +38,8 @@ class Classifier(ABC):
                 print("Model saved successfully")
             else:
                 print("Model wasn't saved")
-        
+            print("----------------------------------------------------------------")
+                    
     
     @abstractmethod    
     def save_model(self, model, path):

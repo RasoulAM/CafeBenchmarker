@@ -1,33 +1,33 @@
 import urllib.request
 import os
+import random
+
+class Dataset():
+
+    def __init__(self, path):
+        # self.dataset_name = None
+        self.dataset_path = path
+        self.train_dataset_path = self.dataset_path + "_train_split"
+        self.test_dataset_path = self.dataset_path + "_test_split"
+
+    def split_train_and_test(self, path=None):
+        with open(self.dataset_path, "r") as raw_dataset:
+            with open(self.train_dataset_path, "w") as train_file:
+                with open(self.test_dataset_path, "w") as test_file:
+                    for line in raw_dataset:
+                        if random.uniform(0, 1) > 0.1:
+                            train_file.write(line)
+                        else:
+                            test_file.write(line)
 
 class Benchmarker:  
 
     def __init__(self):
-        self.dataset_name = None
-        self.dataset_path = None
-        self.train_dataset = None
-        self.test_dataset = None
+        self.datasets = []
         self.list_of_classifiers = None
 
-    def set_dataset(self, pointer_to_the_dataset):
-        '''
-            Set the pointer to the dataset
-        '''
-        pass
-
-    def split_train_and_test(self):
-        '''
-            Splits the dataset to train and test
-        '''
-        pass
-
-    def set_default_dataset(self):
-        dataset_url = 'some_url'
-        dataset_directory = './dataset'
-        self.dataset_name = 'raw_data.json'
-        self.dataset_path = os.path.join(dataset_directory, self.dataset_name)
-        urllib.request.urlretrieve(dataset_url, self.dataset_path)
+    def add_dataset(self, raw_dataset_path):
+        self.datasets.append(Dataset(raw_dataset_path))
 
     def set_classifiers(self, list_of_classifiers):
         self.list_of_classifiers = list_of_classifiers
@@ -45,14 +45,12 @@ class Benchmarker:
         pass
 
     def train_all_classifiers(self):
-        '''
-            this method will train all the models and store them in the models directory
-        '''
-        pass
+        for classifier in self.list_of_classifiers:
+            classifier.train_classifier()
 
     def report_stats(self):
         '''
             To be defined!!
         '''
-        pass    
+        pass
 
