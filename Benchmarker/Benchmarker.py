@@ -35,9 +35,8 @@ class Benchmarker:
     def add_classifier(self, new_classifier):
         if self.list_of_classifiers is None:
             self.list_of_classifiers = []
-        self.list_of_classifiers.append(
-            new_classifier.set_data_path(self.datasets[0].train_dataset_path, self.datasets[0].test_dataset_path)
-        )
+        new_classifier.set_data_path(self.datasets[0].train_dataset_path, self.datasets[0].test_dataset_path)
+        self.list_of_classifiers.append(new_classifier)
         
 
     def clean_dataset(self, duplicate=True):
