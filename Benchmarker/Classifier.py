@@ -76,7 +76,7 @@ class Classifier(ABC):
         '''
         raise NotImplementedError
 
-    def test_classifier(self):
+    def test_classifier(self, debug=False):
         for config in self.config_list:
             model = self.get_model(config)
             start_time = time.time()
