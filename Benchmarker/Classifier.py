@@ -11,13 +11,15 @@ class Classifier(ABC):
         Is able to return the best classifier
     '''
 
-    def __init__(self, classifier_name, train_dataset_path, test_dataset_path, config_list):
+    def __init__(self, classifier_name, config_list):
         self.classifier_name = classifier_name
         self.path = os.path.join('models', classifier_name)
-        self.train_dataset_path = train_dataset_path
-        self.test_dataset_path = test_dataset_path
         self.config_list = config_list
 
+    def set_data_path(self, train_dataset_path, test_dataset_path):
+        self.train_dataset_path = train_dataset_path
+        self.test_dataset_path = test_dataset_path
+        
 
     def train_classifier(self):
         for config in self.config_list:
@@ -39,7 +41,7 @@ class Classifier(ABC):
             else:
                 print("Model wasn't saved")
             print("----------------------------------------------------------------")
-                    
+
     
     @abstractmethod    
     def save_model(self, model, path):

@@ -26,8 +26,9 @@ class Benchmarker:
         self.datasets = []
         self.list_of_classifiers = None
 
-    def add_dataset(self, raw_dataset_path):
-        self.datasets.append(Dataset(raw_dataset_path))
+    def add_dataset(self, dataset):
+        self.datasets.append(dataset)
+
 
     def set_classifiers(self, list_of_classifiers):
         self.list_of_classifiers = list_of_classifiers
